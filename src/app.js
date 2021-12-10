@@ -1,30 +1,37 @@
-  /**
-   * pageOffset est préférable par rappport à scrollY (https://developer.mozilla.org/fr/docs/Web/API/Window/scrollY) 
-   * Ceci est un polyfill pour le gérer sur tous les navigateurs le pageOffset 
-   */
-   const scrollY=()=>{
-    var supportPageOffset = window.pageXOffset !== undefined;
-    var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-    return supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
-}
+/**
+ * pageOffset est préférable par rappport à scrollY (https://developer.mozilla.org/fr/docs/Web/API/Window/scrollY)
+ * Ceci est un polyfill pour gérer sur tous les navigateurs le pageOffset
+ */
+const scrollY = () => {
+  const supportPageOffset = window.pageXOffset !== undefined;
+  const isCSS1Compat = (document.compatMode || '') === 'CSS1Compat';
+  return supportPageOffset
+    ? window.pageYOffset
+    : isCSS1Compat
+    ? document.documentElement.scrollTop
+    : document.body.scrollTop;
+};
 
-function Parallax(){
-const parallaxElements= document.querySelectorAll('[data-speed-parallax]')
+const initializeParallaxToElement = (element) => {
+  const ratio = parseFloat(element.dataset.speedParallax);
+  const screenMiddleY = scrollY() + window.innerHeight / 2;
+  const elementMiddleY = element.offsetTop + element.offsetHeight / 2;
+  const differenceY = elementMiddleY - screenMiddleY;
 
-const onScroll=(element)=>{
-    const ratio= parseFloat(element.dataset.speedParallax);
-    const screenMiddleY= scrollY()+ window.innerHeight/2;
-    const elementMiddleY= element.offsetTop + element.offsetHeight /2;
-    const differenceY= elementMiddleY- screenMiddleY
-    
-    element.style.setProperty('transform', `translateY(${differenceY * -0.5 * ratio}px)`)
-}
+  element.style.setProperty(
+    'transform',
+    `translateY(${differenceY * -0.5 * ratio}px)`
+  );
+};
 
-Array.from(parallaxElements).map((element)=>(
-    document.addEventListener('scroll', ()=> onScroll(element))
-));
-}
+const applyParallaxToElements = () => {
+  const parallaxElements = document.querySelectorAll('[data-speed-parallax]');
 
-(function main(){
-Parallax()
-})()
+  Array.from(parallaxElements).map((element) =>
+    document.addEventListener('scroll', () =>
+      initializeParallaxToElement(element)
+    )
+  );
+};
+
+applyParallaxToElements();
