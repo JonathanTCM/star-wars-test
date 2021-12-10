@@ -1,4 +1,10 @@
 {
+  "name": "star-wars-test",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
   "devDependencies": {
     "parcel": "^2.0.1",
     "prettier": "^2.5.1"
